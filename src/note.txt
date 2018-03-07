@@ -1,0 +1,163 @@
+Block Header:
+version (32 bits = 4 bytes) + 
+previous_hash (8*32 bits = 32 bytes) + 
+merkle_root (8*32 bits = 32 bytes) + 
+ntime (32 bits = 4 buyes) + 
+nbits (32 bits = 4 bytes) + 
+0x80000000 (constant 4 bytes) + 
+0x00000280 (constant 4 bytes)
+
+
+version =
+	work->data[0] = le32dec(sctx->job.version);
+
+previous_hash =
+	for (i = 0; i < 8; i++)
+		work->data[1 + i] = le32dec((uint32_t *)sctx->job.prevhash + i);
+
+merkle_root =
+	for (i = 0; i < 8; i++)
+			work->data[9 + i] = be32dec((uint32_t *)merkle_root + i);
+
+ntime = 
+	work->data[17] = le32dec(sctx->job.ntime);
+	Sample: 5a902662 -> 1519396450 -> 02/23/2018 06:35:00
+
+nbits =
+	work->data[18] = le32dec(sctx->job.nbits);
+
+
+
+
+
+static inline uint32_t le32dec(const void *pp)
+{
+	const uint8_t *p = (uint8_t const *)pp;
+	return ((uint32_t)(p[0]) + ((uint32_t)(p[1]) << 8) +
+	    ((uint32_t)(p[2]) << 16) + ((uint32_t)(p[3]) << 24));
+}
+
+static inline uint32_t be32dec(const void *pp)
+{
+	const uint8_t *p = (uint8_t const *)pp;
+	return ((uint32_t)(p[3]) + ((uint32_t)(p[2]) << 8) +
+	    ((uint32_t)(p[1]) << 16) + ((uint32_t)(p[0]) << 24));
+}
+
+bool hex2bin(void *output, const char *hexstr, size_t len)
+{
+	uchar *p = (uchar *) output;
+	char hex_byte[4];
+	char *ep;
+
+	hex_byte[2] = '\0';
+
+	while (*hexstr && len) {
+		if (!hexstr[1]) {
+			applog(LOG_ERR, "hex2bin str truncated");
+			return false;
+		}
+		hex_byte[0] = hexstr[0];
+		hex_byte[1] = hexstr[1];
+		*p = (uchar) strtol(hex_byte, &ep, 16);
+		if (*ep) {
+			applog(LOG_ERR, "hex2bin failed on '%s'", hex_byte);
+			return false;
+		}
+		p++;
+		hexstr += 2;
+		len--;
+	}
+
+	return (len == 0 && *hexstr == 0) ? true : false;
+}
+
+
+	if (!strcasecmp(method, "mining.notify")) {
+		ret = stratum_notify(sctx, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "mining.ping")) { // cgminer 4.7.1+
+		if (opt_debug) applog(LOG_DEBUG, "Pool ping");
+		ret = stratum_pong(sctx, id);
+		goto out;
+	}
+	if (!strcasecmp(method, "mining.set_difficulty")) {
+		ret = stratum_set_difficulty(sctx, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "mining.set_target")) {
+		sctx->is_equihash = true;
+		ret = equi_stratum_set_target(sctx, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "mining.set_extranonce")) {
+		ret = stratum_parse_extranonce(sctx, params, 0);
+		goto out;
+	}
+	if (!strcasecmp(method, "client.reconnect")) {
+		ret = stratum_reconnect(sctx, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "client.get_algo")) { // ccminer only yet!
+		// will prevent wrong algo parameters on a pool, will be used as test on rejects
+		if (!opt_quiet) applog(LOG_NOTICE, "Pool asked your algo parameter");
+		ret = stratum_get_algo(sctx, id, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "client.get_stats")) { // ccminer/yiimp only yet!
+		// optional to fill device benchmarks
+		ret = stratum_get_stats(sctx, id, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "client.get_version")) { // common
+		ret = stratum_get_version(sctx, id, params);
+		goto out;
+	}
+	if (!strcasecmp(method, "client.show_message")) { // common
+		ret = stratum_show_message(sctx, id, params);
+		goto out;
+	}
+	if (sctx->rpc2 && !strcasecmp(method, "job")) { // xmr/bbr
+		ret = rpc2_stratum_job(sctx, id, params);
+		goto out;
+	}
+
+
+
+struct work {
+	uint32_t data[48];
+	uint32_t target[8];
+	uint32_t maxvote;
+	
+
+	char job_id[128];
+	size_t xnonce2_len;
+	uchar xnonce2[32];
+
+	union {
+		uint32_t u32[2];
+		uint64_t u64[1];
+	} noncerange;
+
+	uint8_t pooln;
+	uint8_t valid_nonces;
+	uint8_t submit_nonce_id;
+	uint8_t job_nonce_id;
+
+	uint32_t nonces[MAX_NONCES];
+	double sharediff[MAX_NONCES];
+	double shareratio[MAX_NONCES];
+	double targetdiff;
+
+	uint32_t height;
+
+	uint32_t scanned_from;
+	uint32_t scanned_to;
+
+	/* pok getwork txs */
+	uint32_t tx_count;
+	struct tx txs[POK_MAX_TXS];
+	// zec solution
+	uint8_t extra[1388];
+};

@@ -1,0 +1,52 @@
+>>> Sending: {"id":1,"method":"mining.subscribe","params":["test/1.0.0"]}
+>>> Sending: {"id":2,"method":"mining.authorize","params":["DFhRKmTDmiz3v3QkRm9NUcTuYnBjsj3r9d","option=Extra"]}
+<<< Received: {"id":1,"result":[[["mining.set_difficulty","0.1"],["mining.notify","11338f0120925607549d2bf956148337"]],"81001869",4],"error":null}
+<<< Received: {{"id":2,"result":true,"error":null}
+<<< Received: {{"id":null,"method":"mining.set_difficulty","params":[0.100]}
+<<< Received: {{"id":null,"method":"mining.notify","params":["643","61c7b1e43cae2fa66e1b2f4b040da1c1ce12b8fccbc5f8aac44026bf2168bad6","020000001dce735a010000000000000000000000000000000000000000000000000000000000000000ffffffff18033b5708041dce735a08","7969696d7000000000000100a3e111000000002321022ed040b46836b3e4e798b0e7cf1939ce291693aa46f1972fc750f70e9e70cce2ac00000000",[],"00000006","1b06b51e","5a73ce1d",true]}
+
+02/23/2018 07:11:00 :
+>>> Sending: {"id":1,"method":"mining.subscribe","params":["test/1.0.0"]}
++++ Received (133) {"id":1,"result":[[["mining.set_difficulty","0.25"],["mining.notify","1d071569674c3f5c69c1416e4bcadd3b"]],"e30044d7",4],"error":null}
+Settings {extranonce1: ''e30044d7', extranonce2Size: '4'}  '
+>>> Sending: {"id":2,"method":"mining.authorize","params":["DFhRKmTDmiz3v3QkRm9NUcTuYnBjsj3r9d","option=Extra"]}
++++ Received (35) {"id":2,"result":true,"error":null}
++++ Received (61) {"id":null,"method":"mining.set_difficulty","params":[0.250]}
++++ Received (399) {"id":null,"method":"mining.notify","params":["2dd83","6243ec0b9050d6c61b3206ae8696e401f9e03b1fc7cb0e37001dbfd700000000","02000000942e905a010000000000000000000000000000000000000000000000000000000000000000ffffffff180382080904952e905a08","7969696d7000000000000100a3e11100000000232103637df881c595e8b440c019adca5ab2d89a865633e67fc129288ad65861b15d91ac00000000",[],"00000006","1b105c16","5a902e94",true]}
+
+
+mining.notify params:
+job_id - ID of the job. Use this ID while submitting share generated from this job.
+prevhash - Hash of previous block.
+coinb1 - Initial part of coinbase transaction.
+coinb2 - Final part of coinbase transaction.
+merkle_branch - List of hashes, will be used for calculation of merkle root. This is not a list of all transactions, it only contains prepared hashes of steps of merkle tree algorithm. Please read  some materials (http://en.wikipedia.org/wiki/Hash_tree) for understanding how merkle trees calculation works. Unfortunately this example don't have any step hashes included, my bad!
+version - Bitcoin block version.
+nbits - Encoded current network difficulty
+ntime - Current ntime/
+clean_jobs - When true, server indicates that submitting shares from previous jobs don't have a sense and such shares will be rejected. When this flag is set, miner should also drop all previous jobs, so job_ids can be eventually rotated.
+
+
+
+
+>>> Sending: {"id":1,"method":"mining.subscribe","params":["test/1.0.0"]}
++++ Received (133) {"id":1,"result":[[["mining.set_difficulty","0.25"],["mining.notify","261806581c93c9060480d3de23facb3d"]],"e30055e4",4],"error":null}
+Settings {extranonce1: ''e30055e4', extranonce2Size: '4'}  '
+>>> Sending: {"id":2,"method":"mining.authorize","params":["DFhRKmTDmiz3v3QkRm9NUcTuYnBjsj3r9d","option=Extra"]}
++++ Received (35) {"id":2,"result":true,"error":null}
++++ Received (61) {"id":null,"method":"mining.set_difficulty","params":[0.250]}
+method: mining.set_difficulty
++++ Received (399) {"id":null,"method":"mining.notify","params":["2e9ae","b50d8370c74ef78888f8bb495043cbf7c7a7ab9f0e00daf800d8fa9e00000000","020000006693915a010000000000000000000000000000000000000000000000000000000000000000ffffffff1803a61109046793915a08","7969696d7000000000000100a3e11100000000232103637df881c595e8b440c019adca5ab2d89a865633e67fc129288ad65861b15d91ac00000000",[],"00000006","1b6fce00","5a919366",true]}
++++ Received (399) {"id":null,"method":"mining.notify","params":["2e9af","6819f7c76d2d1f500689b2c0898302db1f523bb4fa78cdf5001b178e00000000","020000007a93915a010000000000000000000000000000000000000000000000000000000000000000ffffffff1803a71109047b93915a08","7969696d7000000000000100a3e11100000000232103637df881c595e8b440c019adca5ab2d89a865633e67fc129288ad65861b15d91ac00000000",[],"00000006","1b3ba111","5a91937a",true]}
++++ Received (399) {"id":null,"method":"mining.notify","params":["2e9b0","a993a2d1edf75519f69abe4339db1b03bb614fc15b40363e002bb4bb00000000","020000007f93915a010000000000000000000000000000000000000000000000000000000000000000ffffffff1803a81109048093915a08","7969696d7000000000000100a3e11100000000232103637df881c595e8b440c019adca5ab2d89a865633e67fc129288ad65861b15d91ac00000000",[],"00000006","1b2bba61","5a91937f",true]}
+
+
+ZCLASSIC:
++++ Received (294) {"id":null,"method":"mining.notify","params":["5c80","04000000","8294725742ca1596dfa8d1f76423f9fcb07fb03e2ca3c5001de8706001000000","6fb22b8c3e961d4db5cbf547f14b50d0a3c871fa48bbe4e9dcff4fa107f1f452","0000000000000000000000000000000000000000000000000000000000000000","67be9e5a","0161011d",false]}
+
+
+
+
+
+
+
