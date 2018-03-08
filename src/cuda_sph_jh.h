@@ -37,7 +37,7 @@
 #define SPH_JH_H__
 
 #include <stddef.h>
-#include "sph_types.h"
+//#include "sph_types.h"
 #include "types.h"
 
 
@@ -52,59 +52,12 @@
  * <code>memcpy()</code>).
  */
 typedef struct {
-	unsigned char buf[64];    /* first field, for alignment */
+	uchar_8 buf[64];    /* first field, for alignment */
 	size_t ptr;
-	union {
-		uint_64 wide[16];
-		uint_32 narrow[32];
-	} H;
-	sph_u64 block_count;
+	uint_64 wide[16];
+	uint_64 block_count;
 } sph_jh_context;
 
-
-/**
- * Initialize a JH-512 context. This process performs no memory allocation.
- *
- * @param cc   the JH-512 context (pointer to a
- *             <code>sph_jh512_context</code>)
- */
-void sph_jh512_init(sph_jh_context *cc);
-
-/**
- * Process some data bytes. It is acceptable that <code>len</code> is zero
- * (in which case this function does nothing).
- *
- * @param cc     the JH-512 context
- * @param data   the input data
- * @param len    the input data length (in bytes)
- */
-void sph_jh512(sph_jh_context *cc, uchar_8 *data, size_t len);
-
-/**
- * Terminate the current JH-512 computation and output the result into
- * the provided buffer. The destination buffer must be wide enough to
- * accomodate the result (64 bytes). The context is automatically
- * reinitialized.
- *
- * @param cc    the JH-512 context
- * @param dst   the destination buffer
- */
-void sph_jh512_close(sph_jh_context *cc, uchar_8 *dst);
-
-/**
- * Add a few additional bits (0 to 7) to the current computation, then
- * terminate it and output the result in the provided buffer, which must
- * be wide enough to accomodate the result (64 bytes). If bit number i
- * in <code>ub</code> has value 2^i, then the extra bits are those
- * numbered 7 downto 8-n (this is the big-endian convention at the byte
- * level). The context is automatically reinitialized.
- *
- * @param cc    the JH-512 context
- * @param ub    the extra bits
- * @param n     the number of extra bits (0 to 7)
- * @param dst   the destination buffer
- */
-void sph_jh512_addbits_and_close(
-	void *cc, unsigned ub, unsigned n, void *dst);
+void jh512_80(uchar_8 *data, uchar_8 *hash);
 
 #endif

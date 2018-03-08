@@ -145,11 +145,11 @@ void be32enc(void *pp, uint32_t x)
 int main(int argc, char* argv[]) {
 	Job job;
 	job.blockHeader.blockVersion = 6;
-	job.blockHeader.previousHash = "62c937e1aab6cfdda8a3e975df98e33a82e059721d9e25d0219d495485170c54";
-	job.blockHeader.merkleRoot = "6d03c8a58c60473f5beed270b56fc8b5314d5069cd9be05e96cd1b37b5efcd67";
-	job.blockHeader.nTime = 1520369125;
-	job.blockHeader.nBits = 0x1b05d2b9;
-	uint_32 nonce = 3647464893;
+	job.blockHeader.previousHash = "00000000000edd8adb8a7f53b2f7319963da1542260125912fb83757edc697ff";
+	job.blockHeader.merkleRoot = "eb6d23c6cfd584522c91c9c296c83cdfcf4527b9d8a7ac1f5983693c15636365";
+	job.blockHeader.nTime = 1520493559;
+	job.blockHeader.nBits = 0x1b1f2b11;
+	uint_32 nonce = 2479828255;
 
 	MiningSessionSettings settings;
 	settings.extranonce1 = "81001869";
@@ -166,10 +166,7 @@ int main(int argc, char* argv[]) {
 	uchar_8 *data = job.data;
 	uchar_8 hash[64];
 
-	sph_jh_context ctx_jh;
-	sph_jh512_init(&ctx_jh);
-	sph_jh512(&ctx_jh, data, 80);
-	sph_jh512_close(&ctx_jh, hash);
+	jh512_80(data, hash);
 	cout << "Hash 1: " << print(hash, 64) << endl;
 
 	sph_keccak512_context ctx_keccak;
@@ -185,7 +182,7 @@ int main(int argc, char* argv[]) {
 	cout << "Hash 3: " << print(hash, 64) << endl;
 
 	cout << "hash  : " << reverseHexStr( print(hash, 32) ) << endl;
-	string correct("00000000000270aaa150900df2baa3af561aab1f22d31faa2d8bfa45790011af");
+	string correct("000000000009b6d70c3ebcb3a7f35663202b008531197894e4238ae845d434ec");
 	cout << "VALID : " << (!correct.compare(reverseHexStr(print(hash, 32))) ? "TRUE" : "FALSE") << endl;
 	cout << "target: " << print(stratumUtil.getTarget(), 32)  << endl;
 	cout << "memcmp 1: " << memcmp(hash, stratumUtil.getTarget(), 32) << endl;

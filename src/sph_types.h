@@ -49,6 +49,8 @@
 
 #include <limits.h>
 
+#include "types.h"
+
 /*
  * All our I/O functions are defined over octet streams. We do not know
  * how to handle input data if bytes are not octets.
@@ -1218,8 +1220,8 @@ sph_bswap32(sph_u32 x)
 
 #if SPH_64
 
-static SPH_INLINE sph_u64
-sph_bswap64(sph_u64 x)
+static SPH_INLINE uint_64
+sph_bswap64(uint_64 x)
 {
 	__asm__ __volatile__ ("bswapq %0" : "=r" (x) : "0" (x));
 	return x;
@@ -1650,42 +1652,9 @@ sph_dec32le_aligned(const void *src)
  * @param dst   the destination buffer
  * @param val   the 64-bit value to encode
  */
-static SPH_INLINE void
-sph_enc64be(void *dst, sph_u64 val)
-{
-#if defined SPH_UPTR
-#if SPH_UNALIGNED
-#if SPH_LITTLE_ENDIAN
+static void sph_enc64be(void *dst, uint_64 val) {
 	val = sph_bswap64(val);
-#endif
-	*(sph_u64 *)dst = val;
-#else
-	if (((SPH_UPTR)dst & 7) == 0) {
-#if SPH_LITTLE_ENDIAN
-		val = sph_bswap64(val);
-#endif
-		*(sph_u64 *)dst = val;
-	} else {
-		((unsigned char *)dst)[0] = (val >> 56);
-		((unsigned char *)dst)[1] = (val >> 48);
-		((unsigned char *)dst)[2] = (val >> 40);
-		((unsigned char *)dst)[3] = (val >> 32);
-		((unsigned char *)dst)[4] = (val >> 24);
-		((unsigned char *)dst)[5] = (val >> 16);
-		((unsigned char *)dst)[6] = (val >> 8);
-		((unsigned char *)dst)[7] = val;
-	}
-#endif
-#else
-	((unsigned char *)dst)[0] = (val >> 56);
-	((unsigned char *)dst)[1] = (val >> 48);
-	((unsigned char *)dst)[2] = (val >> 40);
-	((unsigned char *)dst)[3] = (val >> 32);
-	((unsigned char *)dst)[4] = (val >> 24);
-	((unsigned char *)dst)[5] = (val >> 16);
-	((unsigned char *)dst)[6] = (val >> 8);
-	((unsigned char *)dst)[7] = val;
-#endif
+	*(uint_64 *)dst = val;
 }
 
 /**
@@ -1795,39 +1764,46 @@ sph_dec64be_aligned(const void *src)
 static SPH_INLINE void
 sph_enc64le(void *dst, sph_u64 val)
 {
-#if defined SPH_UPTR
-#if SPH_UNALIGNED
-#if SPH_BIG_ENDIAN
-	val = sph_bswap64(val);
-#endif
-	*(sph_u64 *)dst = val;
-#else
-	if (((SPH_UPTR)dst & 7) == 0) {
-#if SPH_BIG_ENDIAN
-		val = sph_bswap64(val);
-#endif
-		*(sph_u64 *)dst = val;
-	} else {
-		((unsigned char *)dst)[0] = val;
-		((unsigned char *)dst)[1] = (val >> 8);
-		((unsigned char *)dst)[2] = (val >> 16);
-		((unsigned char *)dst)[3] = (val >> 24);
-		((unsigned char *)dst)[4] = (val >> 32);
-		((unsigned char *)dst)[5] = (val >> 40);
-		((unsigned char *)dst)[6] = (val >> 48);
-		((unsigned char *)dst)[7] = (val >> 56);
-	}
-#endif
-#else
-	((unsigned char *)dst)[0] = val;
-	((unsigned char *)dst)[1] = (val >> 8);
-	((unsigned char *)dst)[2] = (val >> 16);
-	((unsigned char *)dst)[3] = (val >> 24);
-	((unsigned char *)dst)[4] = (val >> 32);
-	((unsigned char *)dst)[5] = (val >> 40);
-	((unsigned char *)dst)[6] = (val >> 48);
-	((unsigned char *)dst)[7] = (val >> 56);
-#endif
+//#if defined SPH_UPTR
+//#if SPH_UNALIGNED
+//#if SPH_BIG_ENDIAN
+//	val = sph_bswap64(val);
+//	printf("\n--->OK 10\n");
+//#endif
+	*(uint_64 *)dst = val;
+//	printf("\n--->OK 20\n");
+//#else
+//	if (((SPH_UPTR)dst & 7) == 0) {
+//		printf("\n--->OK 30\n");
+//#if SPH_BIG_ENDIAN
+//		val = sph_bswap64(val);
+//		printf("\n--->OK 40\n");
+//#endif
+//		*(sph_u64 *)dst = val;
+//		printf("\n--->OK 1\n");
+//	} else {
+//		printf("\n--->OK 2\n");
+//		((unsigned char *)dst)[0] = val;
+//		((unsigned char *)dst)[1] = (val >> 8);
+//		((unsigned char *)dst)[2] = (val >> 16);
+//		((unsigned char *)dst)[3] = (val >> 24);
+//		((unsigned char *)dst)[4] = (val >> 32);
+//		((unsigned char *)dst)[5] = (val >> 40);
+//		((unsigned char *)dst)[6] = (val >> 48);
+//		((unsigned char *)dst)[7] = (val >> 56);
+//	}
+//#endif
+//#else
+//	printf("\n--->OK 3\n");
+//	((unsigned char *)dst)[0] = val;
+//	((unsigned char *)dst)[1] = (val >> 8);
+//	((unsigned char *)dst)[2] = (val >> 16);
+//	((unsigned char *)dst)[3] = (val >> 24);
+//	((unsigned char *)dst)[4] = (val >> 32);
+//	((unsigned char *)dst)[5] = (val >> 40);
+//	((unsigned char *)dst)[6] = (val >> 48);
+//	((unsigned char *)dst)[7] = (val >> 56);
+//#endif
 }
 
 /**
@@ -1935,7 +1911,7 @@ static SPH_INLINE sph_u64
 sph_dec64le_aligned(const void *src)
 {
 #if SPH_LITTLE_ENDIAN
-	return *(const sph_u64 *)src;
+	return *(const uint_64 *)src;
 #elif SPH_BIG_ENDIAN
 #if SPH_SPARCV9_GCC_64 && !SPH_NO_ASM
 	sph_u64 tmp;

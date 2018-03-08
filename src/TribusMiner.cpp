@@ -21,10 +21,11 @@ uint_32 TribusMiner::mine(Job job) {
 		do {
 			setNonceInHeader(job.data, nonce);
 
-			sph_jh_context ctx_jh;
-			sph_jh512_init(&ctx_jh);
-			sph_jh512(&ctx_jh, job.data, 80);
-			sph_jh512_close(&ctx_jh, hash);
+//			sph_jh_context ctx_jh;
+//			sph_jh512_init(&ctx_jh);
+//			sph_jh512(&ctx_jh, job.data, 80);
+//			sph_jh512_close(&ctx_jh, hash);
+			jh512_80(job.data, hash);
 
 			sph_keccak512_context ctx_keccak;
 			sph_keccak512_init(&ctx_keccak);
