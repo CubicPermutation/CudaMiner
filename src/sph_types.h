@@ -900,7 +900,7 @@ typedef long sph_s64;
 typedef unsigned long long sph_u64;
 typedef long long sph_s64;
 
-#define SPH_C64(x)    ((sph_u64)(x ## ULL))
+#define SPH_C64(x)    ((uint_64)(x ## ULL))
 
 #define SPH_64  1
 
@@ -1813,23 +1813,8 @@ sph_enc64le(void *dst, sph_u64 val)
  * @param dst   the destination buffer (64-bit aligned)
  * @param val   the value to encode
  */
-static SPH_INLINE void
-sph_enc64le_aligned(void *dst, sph_u64 val)
-{
-#if SPH_LITTLE_ENDIAN
+static SPH_INLINE void sph_enc64le_aligned(void *dst, sph_u64 val) {
 	*(sph_u64 *)dst = val;
-#elif SPH_BIG_ENDIAN
-	*(sph_u64 *)dst = sph_bswap64(val);
-#else
-	((unsigned char *)dst)[0] = val;
-	((unsigned char *)dst)[1] = (val >> 8);
-	((unsigned char *)dst)[2] = (val >> 16);
-	((unsigned char *)dst)[3] = (val >> 24);
-	((unsigned char *)dst)[4] = (val >> 32);
-	((unsigned char *)dst)[5] = (val >> 40);
-	((unsigned char *)dst)[6] = (val >> 48);
-	((unsigned char *)dst)[7] = (val >> 56);
-#endif
 }
 
 /**

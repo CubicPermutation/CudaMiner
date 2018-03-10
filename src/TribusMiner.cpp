@@ -3,7 +3,7 @@
 #include "util.h"
 #include <stdlib.h>
 
-#include "sph_keccak.h"
+#include "cuda_sph_keccak.h"
 #include "sph_echo.h"
 #include "cuda_sph_jh.h"
 
@@ -27,10 +27,11 @@ uint_32 TribusMiner::mine(Job job) {
 //			sph_jh512_close(&ctx_jh, hash);
 			jh512_80(job.data, hash);
 
-			sph_keccak512_context ctx_keccak;
-			sph_keccak512_init(&ctx_keccak);
-			sph_keccak512(&ctx_keccak, (const void*) hash, 64);
-			sph_keccak512_close(&ctx_keccak, (void*) hash);
+//			sph_keccak512_context ctx_keccak;
+//			sph_keccak512_init(&ctx_keccak);
+//			sph_keccak512(&ctx_keccak, (const void*) hash, 64);
+//			sph_keccak512_close(&ctx_keccak, (void*) hash);
+//			keccak512_80(hash, hash);
 
 			sph_echo512_context ctx_echo;
 			sph_echo512_init(&ctx_echo);
