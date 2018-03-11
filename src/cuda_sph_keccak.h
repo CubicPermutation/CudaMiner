@@ -36,7 +36,6 @@
 #pragma once
 
 #include <stddef.h>
-#include "sph_types.h"
 #include "types.h"
 
 
@@ -51,18 +50,10 @@
  * <code>memcpy()</code>).
  */
 typedef struct {
-#ifndef DOXYGEN_IGNORE
-	unsigned char buf[144];    /* first field, for alignment */
+	uchar_8 buf[144];    /* first field, for alignment */
 	size_t ptr, lim;
-	union {
-#if SPH_64
-		uint_64 wide[25];
-#endif
-		sph_u32 narrow[50];
-	} u;
-#endif
+	uint_64 wide[25];
 } sph_keccak_context;
-
 
 
 void keccak512_80(uchar_8 *data, uchar_8 *hash);

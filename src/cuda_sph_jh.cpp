@@ -31,6 +31,7 @@
  */
 
 #include "cuda_sph_jh.h"
+#include "types.h"
 
 uint_64 sph_bswap64(uint_64 x) {
 	__asm__ __volatile__ ("bswapq %0" : "=r" (x) : "0" (x));

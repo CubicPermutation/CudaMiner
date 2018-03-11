@@ -1,7 +1,7 @@
-/* $Id: sph_jh.h 216 2010-06-08 09:46:57Z tp $ */
+/* $Id: sph_echo.h 216 2010-06-08 09:46:57Z tp $ */
 /**
- * JH interface. JH is a family of functions which differ by
- * their output size; this implementation defines JH for output
+ * ECHO interface. ECHO is a family of functions which differ by
+ * their output size; this implementation defines ECHO for output
  * sizes 224, 256, 384 and 512 bits.
  *
  * ==========================(LICENSE BEGIN)============================
@@ -29,31 +29,40 @@
  *
  * ===========================(LICENSE END)=============================
  *
- * @file     sph_jh.h
+ * @file     sph_echo.h
  * @author   Thomas Pornin <thomas.pornin@cryptolog.com>
  */
+
+//#ifndef SPH_ECHO_H__
+//#define SPH_ECHO_H__
 
 #pragma once
 
 #include <stddef.h>
+#include "sph_types.h"
 #include "types.h"
 
+
 /**
- * This structure is a context for JH computations: it contains the
+ * This structure is a context for ECHO computations: it contains the
  * intermediate values and some data from the last entered block. Once
- * a JH computation has been performed, the context can be reused for
- * another computation.
+ * an ECHO computation has been performed, the context can be reused for
+ * another computation. This specific structure is used for ECHO-384
+ * and ECHO-512.
  *
- * The contents of this structure are private. A running JH computation
+ * The contents of this structure are private. A running ECHO computation
  * can be cloned by copying the context (e.g. with a simple
  * <code>memcpy()</code>).
  */
 typedef struct {
-	uchar_8 buf[64];    /* first field, for alignment */
+	uchar_8 buf[128];    /* first field, for alignment */
 	size_t ptr;
-	uint_64 wide[16];
-	uint_64 block_count;
-} sph_jh_context;
+	union {
+		uint_32 Vs[8][4];
+		uint_64 Vb[8][2];
+	} u;
+	uint_32 C0, C1, C2, C3;
+} sph_echo_big_context;
 
-void jh512_80(uchar_8 *data, uchar_8 *hash);
+void echo512_80(uchar_8 *data, uchar_8 *hash);
 

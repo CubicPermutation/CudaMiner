@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 #include "cuda_sph_keccak.h"
-#include "sph_echo.h"
+#include "cuda_sph_echo.h"
 #include "cuda_sph_jh.h"
 
 uint_32 TribusMiner::mine(Job job) {
@@ -21,22 +21,15 @@ uint_32 TribusMiner::mine(Job job) {
 		do {
 			setNonceInHeader(job.data, nonce);
 
-//			sph_jh_context ctx_jh;
-//			sph_jh512_init(&ctx_jh);
-//			sph_jh512(&ctx_jh, job.data, 80);
-//			sph_jh512_close(&ctx_jh, hash);
 			jh512_80(job.data, hash);
 
-//			sph_keccak512_context ctx_keccak;
-//			sph_keccak512_init(&ctx_keccak);
-//			sph_keccak512(&ctx_keccak, (const void*) hash, 64);
-//			sph_keccak512_close(&ctx_keccak, (void*) hash);
-//			keccak512_80(hash, hash);
+			keccak512_80(hash, hash);
 
-			sph_echo512_context ctx_echo;
-			sph_echo512_init(&ctx_echo);
-			sph_echo512(&ctx_echo, (const void*) hash, 64);
-			sph_echo512_close(&ctx_echo, (void*) hash);
+//			sph_echo512_context ctx_echo;
+//			sph_echo512_init(&ctx_echo);
+//			sph_echo512(&ctx_echo, hash, 64);
+//			sph_echo512_close(&ctx_echo, (void*) hash);
+			echo512_80(hash, hash);
 
 			if( !(nonce % 0x10000) ) {
 				printf("Nonce: %s {%s} [%s]\n", reverseHexStr(print((uchar_8*)&nonce, 4)).c_str(), jobId.c_str(), prevHash.c_str());

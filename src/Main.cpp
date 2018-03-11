@@ -7,17 +7,13 @@
 
 #include "cuda_sph_jh.h"
 #include "cuda_sph_keccak.h"
-#include "sph_echo.h"
+#include "cuda_sph_echo.h"
 
 
 #include "util.h"
 #include "openssl/sha.h"
 
-// yiimp 86.200.212.88 8533
-// hashbag 185.181.8.92 8688
-// yiimp 86.200.212.88 3333 (Titcoin (sha256))
-
-#define YIIMP "86.200.212.88"
+#define YIIMP "86.200.61.239"
 #define HASHBAG "185.181.8.92"
 #define miningpoolhub_zclassic "139.162.73.35"
 
@@ -42,11 +38,11 @@ using namespace std;
 int main1() {
 	// Test Stratum Client
 	StratumUtil stratumUtil;
-	StratumManager stratum(&stratumUtil, HASHBAG, HASHBAG_DNR_PORT, DNR_PUBLIC_ADDRESS, "c=DNR,stats");
-//	StratumManager stratum(YIIMP, YIIMP_DNR_PORT, DNR_PUBLIC_ADDRESS, "c=DNR,stats");
+//	StratumManager stratum(&stratumUtil, HASHBAG, HASHBAG_DNR_PORT, DNR_PUBLIC_ADDRESS, "c=DNR,stats");
+	StratumManager stratum(&stratumUtil, YIIMP, YIIMP_DNR_PORT, DNR_PUBLIC_ADDRESS, "c=DNR,stats");
 	TribusMiner miner(&stratum);
 
-	stratum.subscribe("Test/1.0.0.0");
+	stratum.subscribe("Test/0.0.0.1");
 	stratum.authorize();
 	stratum.start(&miner);
 
@@ -56,10 +52,10 @@ int main1() {
 int main2() {
 	Job job;
 	job.blockHeader.blockVersion = hexToInt("00000006");
-	job.blockHeader.previousHash = "936db7e36aeb57943a1c5e7eac6972f72d4f26a40dd31f49c1b9c5f0e77e8d99";
-	job.blockHeader.merkleRoot = "";
-	job.blockHeader.nTime = hexToInt("5a9eaa2e");
-	job.blockHeader.nBits = hexToInt("1b027803");
+	job.blockHeader.previousHash = "00000000000bb28d430811fe9a45129f9a63e189814cac0393b66d0426cff08f";
+	job.blockHeader.merkleRoot = "96364453a5c7fd918ef052e0c2908f1d3b4ec3ddd0731cdf7f4b30df59077566";
+	job.blockHeader.nTime = 1520721853;
+	job.blockHeader.nBits = hexToInt("1b07e716");
 //	job.coinbase1 = "02000000942e905a010000000000000000000000000000000000000000000000000000000000000000ffffffff180382080904952e905a08";
 //	job.coinbase1 = "7969696d7000000000000100a3e11100000000232103637df881c595e8b440c019adca5ab2d89a865633e67fc129288ad65861b15d91ac00000000";
 
@@ -95,6 +91,14 @@ int main3() {
 	uint_32 time_ = 1392871388; // 2014-02-20 04:57:25
 	uint_32 bits = 0x1b10bc60;
 	uint_32 nonce = 4242274009;
+
+//	Job job;
+//	job.blockHeader.blockVersion = hexToInt("00000006");
+//	job.blockHeader.previousHash = "00000000000bb28d430811fe9a45129f9a63e189814cac0393b66d0426cff08f";
+//	job.blockHeader.merkleRoot = "96364453a5c7fd918ef052e0c2908f1d3b4ec3ddd0731cdf7f4b30df59077566";
+//	job.blockHeader.nTime = 1520721853;
+//	job.blockHeader.nBits = hexToInt("1b07e716");
+//	uint_32 nonce = 2759401150;
 
 	uchar_8 data[80] = {0};
 
@@ -143,14 +147,23 @@ void be32enc(void *pp, uint32_t x)
 }
 
 int main(int argc, char* argv[]) {
+//	Job job;
+//	job.blockHeader.blockVersion = 6;
+//	job.blockHeader.previousHash = "6ff82140864bf7ba0f42d9c3d91ad26395e24ddb6a31282e3fa37e1af8c2bf76";
+//	job.blockHeader.merkleRoot = "4a78a89b2d46ec585e5e0595dd3b44b5c0062b2d5e41bf5df46bc2a47b7f5ea2";
+//	job.blockHeader.nTime = 1519135271;
+//	job.blockHeader.nBits = 0x1b09f630;
+//	uint_32 nonce = 320665675;
+//	string correct = "000000000008a40ddd02700ea978a8091c0be6f296be848027ca9fa234aded12";
+
 	Job job;
-	job.blockHeader.blockVersion = 6;
-	job.blockHeader.previousHash = "6ff82140864bf7ba0f42d9c3d91ad26395e24ddb6a31282e3fa37e1af8c2bf76";
-	job.blockHeader.merkleRoot = "4a78a89b2d46ec585e5e0595dd3b44b5c0062b2d5e41bf5df46bc2a47b7f5ea2";
-	job.blockHeader.nTime = 1519135271;
-	job.blockHeader.nBits = 0x1b09f630;
-	uint_32 nonce = 320665675;
-	string correct = "000000000008a40ddd02700ea978a8091c0be6f296be848027ca9fa234aded12";
+	job.blockHeader.blockVersion = hexToInt("00000006");
+	job.blockHeader.previousHash = "00000000000bb28d430811fe9a45129f9a63e189814cac0393b66d0426cff08f";
+	job.blockHeader.merkleRoot = "96364453a5c7fd918ef052e0c2908f1d3b4ec3ddd0731cdf7f4b30df59077566";
+	job.blockHeader.nTime = 1520721853;
+	job.blockHeader.nBits = hexToInt("1b07e716");
+	uint_32 nonce = 2759401154;
+	string correct = "0000000000003bde22643cd7932705a3f84ac4c474a8a812ffdfcf969ded7d4c";
 
 	MiningSessionSettings settings;
 	settings.extranonce1 = "81001869";
@@ -173,10 +186,7 @@ int main(int argc, char* argv[]) {
 	keccak512_80(data, hash);
 	cout << "Hash 2: " << print(hash, 64) << endl;
 
-	sph_echo512_context ctx_echo;
-	sph_echo512_init(&ctx_echo);
-	sph_echo512(&ctx_echo, (const void*) hash, 64);
-	sph_echo512_close(&ctx_echo, (void*) hash);
+	echo512_80(data, hash);
 	cout << "Hash 3: " << print(hash, 64) << endl;
 
 	cout << "hash  : " << reverseHexStr( print(hash, 32) ) << endl;
@@ -187,4 +197,5 @@ int main(int argc, char* argv[]) {
 
 	return 0;
 }
+
 
